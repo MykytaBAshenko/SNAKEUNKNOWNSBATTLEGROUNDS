@@ -39,6 +39,11 @@
   let game_array = {}
   let game = document.getElementById("game")
   let ctx 
+  let clickListener
+  let intervalVarible
+
+
+
   function initing() {
     game.innerHTML = ""
   game.append(...getFirstPage())
@@ -98,7 +103,7 @@ function play_game(){
   }
 
   if(game_array.was_click) {
-
+    if(game_array)
   }
   game_array.map = first_map
 }
@@ -189,9 +194,49 @@ function create_game(players) {
   }
     }
 
-    setInterval(play_game, 1000/15);   
-
+    intervalVarible = setInterval(play_game, 1000/15);   
+    clickListener = document.addEventListener("keydown", keyPush);
 }
+
+function keyPush(evt) {
+  game_array.was_click = 1;
+  switch(evt.keyCode){
+    case 37:
+      game_array.player2.x = -1
+      game_array.player2.y = 0
+    break;
+    case 38:
+      game_array.player2.x = 0
+      game_array.player2.y = -1
+    break;
+    case 39:
+      game_array.player2.x = 1
+      game_array.player2.y = 0
+    break;
+    case 40:
+      game_array.player2.x = 0
+      game_array.player2.y = 1
+    break;
+    // player 2 arrows /|\
+    case 65:
+      game_array.player1.x = -1
+      game_array.player1.y = 0
+    break;
+    case 87:
+      game_array.player1.x = 0
+      game_array.player1.y = -1
+    break;
+    case 68:
+      game_array.player1.x = 1
+      game_array.player1.y = 0
+    break;
+    case 83:
+      game_array.player1.x = 0
+      game_array.player1.y = 1
+    break;
+  }
+}  
+
 function getFirstPage() {
   let result = []
   if(devices.test(navigator.userAgent)){
