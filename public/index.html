@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+    <title>React App</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <div id="game">
+
+    </div>
+  </body>
+
+  
+
+
+  <style>
+    #root{
+      position: absolute;
+    }
+    canvas{
+      background: black;
+    }
+  </style>
+</html>
+<script>
+  let game_array = {}
+  let game = document.getElementById("game")
+  let ctx 
+  function initing() {
+    game.innerHTML = ""
+  game.append(...getFirstPage())
+}
+const devices = new RegExp('Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini', "i"); 
+
+function start_game() {
+
+}
+
+// wasd - 1
+// arrows - 2
+// gvbn - 3
+// okl;- 4 
+const map_cube_size = 27
+const map_height = 30
+const map_width = 50
+function output_map(){
+  for(var h=0;h<game_array.map.length;h++){
+      for(var w = 0;w < game_array.map[h].length;w++){
+        if(game_array.map[h][w] == 1){
+          ctx.fillStyle="#c9c9c9";
+          ctx.fillRect(w*map_cube_size+2,h*map_cube_size+2,map_cube_size-2,map_cube_size-2);
+    }
+    }
+    }
+}
+function outputlayer(player) {
+  if(player == 1) {
+    for(let hh = 0; hh < game_array.player1.tail.length; hh++) {
+      ctx.fillStyle=game_array.player1.color;
+      ctx.fillRect(game_array.player1.tail[hh][0]*map_cube_size+2,game_array.player1.tail[hh][1]*map_cube_size+2,map_cube_size-2,map_cube_size-2);
+    }
+    ctx.fillStyle=game_array.player1.head_color;
+    ctx.fillRect(game_array.player1.head[0]*map_cube_size+2,game_array.player1.head[1]*map_cube_size+2,map_cube_size-2,map_cube_size-2);
+  }
+  if(player == 2) {
+    for(let hh = 0; hh < game_array.player1.tail.length; hh++) {
+      ctx.fillStyle=game_array.player2.color;
+      ctx.fillRect(game_array.player2.tail[hh][0]*map_cube_size+2,game_array.player2.tail[hh][1]*map_cube_size+2,map_cube_size-2,map_cube_size-2);
+    }
+    ctx.fillStyle=game_array.player2.head_color;
+    ctx.fillRect(game_array.player2.head[0]*map_cube_size+2,game_array.player2.head[1]*map_cube_size+2,map_cube_size-2,map_cube_size-2);
+  }
+}
+
+function play_game(){
+  let canv = document.getElementById("canvas")
+  ctx.clearRect(0,0,canv.width,canv.height);
+  const first_map = game_array.map
+  output_map()
+  if(game_array?.player1?.life == 1){
+    outputlayer(1)
+  }
+  if(game_array?.player2?.life == 1){
+    outputlayer(2)
+  }
+
+  if(game_array.was_click) {
+
+  }
+  game_array.map = first_map
+}
+
+function create_game(players) {
+  game.innerHTML =``
+  let pagecontrol = document.createElement("div")
+  pagecontrol.className = "pagecontrol"
+  let btn_rules = document.createElement("button")
+  btn_rules.onclick = function () {
+            show_rules();
+  }
+  btn_rules.innerHTML= "Rules"
+
+  let btn_back = document.createElement("button")
+  btn_back.innerHTML= "Back"
+  btn_back.onclick = function () {
+    () =>initing();
+  }
+  pagecontrol.append(btn_rules)
+  pagecontrol.append(btn_back)
+  game.append(pagecontrol)
+  let canvas = document.createElement("canvas")
+  canvas.width = "1353"
+  canvas.height = "813"
+  canvas.id="canvas"
+  game_array.was_click = 0;
+
+  game.append(canvas)
+  if(players == 2) {
+  game_array.map = [
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1],
+    [1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1],
+    [1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1],
+    [1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1],
+    [1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
+    [1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1],
+    [1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1],
+    [1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1],
+    [1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+    [1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    ]
+    ctx = canvas.getContext("2d");
+    
+    game_array.players = 2;
+  game_array.player1 ={
+    length: 1,
+    player: 1,
+    tail: [[5,5]],
+    head: [5,5],
+    x: 1,
+    y: 0,
+    power: 0,
+    life: 1,
+    color:"green",
+    head_color: "lime"
+  }
+  game_array.player2 ={
+    length: 1,
+    tail: [[44,24]],
+    head: [44,24],
+    x: -1,
+    y: 0,
+    power: 0,
+    life: 1,
+    color:"#5cd3ff",
+    head_color: "#006aff"
+  }
+    }
+
+    setInterval(play_game, 1000/15);   
+
+}
+function getFirstPage() {
+  let result = []
+  if(devices.test(navigator.userAgent)){
+    let h1 = document.createElement('h1')
+    h1.append("Sorry but this page only for PC")
+    result.push(h1)
+    return result
+  }
+  let div_header=document.createElement("div");
+  div_header.className="div_header"
+  let h1 = document.createElement('h1')
+  h1.append("SUBG")
+  div_header.append(h1);
+  result.push(div_header)
+  let div_with_btn=document.createElement("div");
+  div_with_btn.className="div_with_btn"
+  let btn_2_players = document.createElement('button')
+  btn_2_players.innerHTML = "2 players"
+  btn_2_players.onclick = function () {
+            create_game(2);
+  }
+  let btn_3_players = document.createElement('button')
+  btn_3_players.innerHTML = "3 players"
+  let btn_4_players = document.createElement('button')
+  btn_4_players.innerHTML = "4 players"
+  btn_4_players.onclick = function () {
+            create_game(4);
+  }
+  let btn_rules = document.createElement('button')
+  btn_rules.innerHTML = "Rules"
+  btn_rules.onclick = function () {
+            show_rules();
+  }
+  div_with_btn.append(btn_2_players)
+  div_with_btn.append(btn_3_players)
+  div_with_btn.append(btn_4_players)
+  div_with_btn.append(btn_rules)
+  result.push(div_with_btn)
+  let links_block = document.createElement('div')
+  links_block.className = "links_block"
+  let link_source_code = document.createElement('a')
+  link_source_code.href= "https://github.com/MykytaBAshenko/snakeunknownsbattlegrounds"
+  link_source_code.target= "blank"
+  link_source_code.innerHTML= "Source code"
+  
+  let link_creator1 = document.createElement('a')
+  link_creator1.href= "https://github.com/MykytaBAshenko"
+  link_creator1.target= "blank"
+  link_creator1.innerHTML= "Mykyta Bashenko"
+  links_block.append(link_creator1)
+  let link_creator2 = document.createElement('a')
+  link_creator2.href= "#"
+  link_creator2.target= "blank"
+  link_creator2.innerHTML= "vkme"
+  links_block.append(link_source_code)
+  links_block.append(link_creator1)
+  links_block.append(link_creator2)
+
+  result.push(links_block)
+  return result
+}
+
+function show_rules() {
+  game.innerHTML = `
+  <div class="rules_page">
+    <div><button onClick="initing()">Back on start page</button></div>
+    <div class="rules_title">Rules</div>
+    <div> hui</div>
+  </div>
+  `
+}
+
+initing()
+
+</script>
