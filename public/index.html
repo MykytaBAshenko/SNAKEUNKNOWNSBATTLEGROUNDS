@@ -81,7 +81,7 @@ function outputlayer(player) {
     ctx.fillRect(game_array.player1.head[0]*map_cube_size+2,game_array.player1.head[1]*map_cube_size+2,map_cube_size-2,map_cube_size-2);
   }
   if(player == 2) {
-    for(let hh = 0; hh < game_array.player1.tail.length; hh++) {
+    for(let hh = 0; hh < game_array.player2.tail.length; hh++) {
       ctx.fillStyle=game_array.player2.color;
       ctx.fillRect(game_array.player2.tail[hh][0]*map_cube_size+2,game_array.player2.tail[hh][1]*map_cube_size+2,map_cube_size-2,map_cube_size-2);
     }
@@ -90,11 +90,47 @@ function outputlayer(player) {
   }
 }
 
+function check_on_hit_tails(player){
+  let array_of_all_tails = [];
+  for ( let k = 0; k < game_array.player1.tail.length; k++ ) 
+    array_of_all_tails.push(game_array.player1.tail[k])
+  for ( let k = 0; k < game_array.player2.tail.length; k++ ) 
+    array_of_all_tails.push(game_array.player2.tail[k])
+  let new_head_cor = [player.head[0]+player.x,player.head[1]+player.y]
+  for(let p = 0; p < array_of_all_tails.length; p++){
+    if(array_of_all_tails[p][0] == new_head_cor[0] && array_of_all_tails[p][1] == new_head_cor[1])
+      return true
+  }
+  return false
+}
+
+function move_player(num) {
+  if(num == 1){
+    game_array.player1.head = [game_array.player1.head[0] + game_array.player1.x,game_array.player1.head[1] + game_array.player1.y];
+    for(let yy = game_array.player1.tail.length; yy >= 0 ;yy--){
+      if(yy == 0)
+      game_array.player1.tail[0] = game_array.player1.head
+      else
+      game_array.player1.tail[yy - 1] = game_array.player1.tail[yy - 2]
+      
+    }
+  }
+}
+
 function play_game(){
   let canv = document.getElementById("canvas")
   ctx.clearRect(0,0,canv.width,canv.height);
   const first_map = game_array.map
   output_map()
+  if(game_array.was_click) {
+    if(game_array.player1?.life > 0) {
+      if (check_on_hit_tails(game_array.player1))
+        game_array.player1.life=game_array.player1.life-1 
+      else{
+        move_player(1)
+      }
+    }
+  }
   if(game_array?.player1?.life == 1){
     outputlayer(1)
   }
@@ -102,9 +138,7 @@ function play_game(){
     outputlayer(2)
   }
 
-  if(game_array.was_click) {
-    if(game_array)
-  }
+  
   game_array.map = first_map
 }
 
@@ -172,7 +206,7 @@ function create_game(players) {
   game_array.player1 ={
     length: 1,
     player: 1,
-    tail: [[5,5]],
+    tail: [[5,5],[4,5],[3,5]],
     head: [5,5],
     x: 1,
     y: 0,
@@ -202,37 +236,60 @@ function keyPush(evt) {
   game_array.was_click = 1;
   switch(evt.keyCode){
     case 37:
+    if(game_array.player2.x != -1){
+
       game_array.player2.x = -1
       game_array.player2.y = 0
+    }
     break;
     case 38:
+    if(game_array.player2.y != 1){
+
       game_array.player2.x = 0
       game_array.player2.y = -1
+    }
     break;
     case 39:
+    if(game_array.player2.x != -1){
+
       game_array.player2.x = 1
       game_array.player2.y = 0
+    }
     break;
     case 40:
+      if(game_array.player2.y != -1){
       game_array.player2.x = 0
       game_array.player2.y = 1
+      }
     break;
     // player 2 arrows /|\
     case 65:
+    if(game_array.player1.x != 1){
+
       game_array.player1.x = -1
       game_array.player1.y = 0
+    }
     break;
     case 87:
+    if(game_array.player1.y != 1){
+
       game_array.player1.x = 0
       game_array.player1.y = -1
+    }
     break;
     case 68:
+    if(game_array.player1.x != -1){
+
       game_array.player1.x = 1
       game_array.player1.y = 0
+    }
     break;
     case 83:
+    if(game_array.player1.y != -1){
+
       game_array.player1.x = 0
       game_array.player1.y = 1
+    }
     break;
   }
 }  
