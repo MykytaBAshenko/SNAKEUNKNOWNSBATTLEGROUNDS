@@ -87,13 +87,26 @@ function output_map(){
   for(let o = 0; o < game_array.food.length; o++){    
     ctx.fillRect(game_array.food[o][0]*map_cube_size+2,game_array.food[o][1]*map_cube_size+2,map_cube_size-2,map_cube_size-2);
   }
+
+  if(!game_array.is_was_toched && game_array.which_buff == 2){
+    ctx.fillStyle="orange";
+    ctx.fillRect(map_cube_size*((game_array.map[0].length )/2-1)+2,map_cube_size*((game_array.map.length )/2-1)+2,map_cube_size*2-2,map_cube_size*2-2);
+  }
+  
+  if(!game_array.is_was_toched && game_array.which_buff == 1){
+    ctx.fillStyle="white";
+    ctx.fillRect(map_cube_size*((game_array.map[0].length )/2-1)+2,map_cube_size*((game_array.map.length )/2-1)+2,map_cube_size*2-2,map_cube_size*2-2);
+  }
 }
+
+const immortal_color = "orange"
+
 function outputlayer(player) {
   if(player == 1) {
     for(let hh = 0; hh < game_array.player1.tail.length; hh++) {
       ctx.fillStyle=game_array.player1.color;
       if(game_array.is_active_immortal > 0 && game_array.who_have_immortal == 1)
-      ctx.fillStyle="white";
+      ctx.fillStyle=immortal_color;
 
       ctx.fillRect(game_array.player1.tail[hh][0]*map_cube_size+2,game_array.player1.tail[hh][1]*map_cube_size+2,map_cube_size-2,map_cube_size-2);
     }
@@ -104,7 +117,7 @@ function outputlayer(player) {
     for(let hh = 0; hh < game_array.player2.tail.length; hh++) {
       ctx.fillStyle=game_array.player2.color;
       if(game_array.is_active_immortal > 0 && game_array.who_have_immortal == 2)
-      ctx.fillStyle="white";
+      ctx.fillStyle=immortal_color;
       ctx.fillRect(game_array.player2.tail[hh][0]*map_cube_size+2,game_array.player2.tail[hh][1]*map_cube_size+2,map_cube_size-2,map_cube_size-2);
     }
     ctx.fillStyle=game_array.player2.head_color;
@@ -172,9 +185,6 @@ function getRandomIntFrom1(max) {
 
 
 function generete_buf(){
-  // game_array.break_point = 6;
-  // game_array.break_count = 0;
-  // game_array.max_was_before_break_count = 0;
   let player_len = 0;
   if(game_array.player1.tail.length > player_len){
     player_len = game_array.player1.tail.length;
@@ -205,7 +215,7 @@ function check_on_center_coordinat_buf(jj) {
 
 }
 
-const duration_ice = 20;
+const duration_ice = 80;
 const duration_immortal = 100;
 const duration_fire = 20;
 
@@ -215,8 +225,11 @@ function move_player(num) {
  if(num == game_array.who_have_immortal){ 
   game_array.is_active_immortal--;
  }
- game_array.is_ice_active--;
-  if(num == 1){
+ if(num == game_array.who_have_ice_buff ){ 
+  game_array.is_ice_active--;
+ }
+
+  if(num == 1 &&( (game_array.is_ice_active >0 && game_array.who_have_ice_buff == 1) || !game_array.is_ice_active || game_array.is_ice_active < 0)) {
   // console.log(game_array)
     
     
@@ -292,7 +305,8 @@ function move_player(num) {
       
     }
   }
-  if(num == 2){
+  if(num == 2 &&( (game_array.is_ice_active >0 && game_array.who_have_ice_buff == 2) || !game_array.is_ice_active || game_array.is_ice_active < 0)) {
+
     
     if (check_on_center_coordinat_buf(game_array.player2.head)){
       game_array.is_was_toched = 1;
@@ -386,7 +400,7 @@ function get_coordinats_of_free_map() {
 
 
 function generete_food(){
-  if(game_array.food.length < game_array.players + 100){
+  if(game_array.food.length < game_array.players ){
     let array_of_tails = get_coordinats_of_all_tails();
     let array_of_0map = get_coordinats_of_free_map(); 
     let array_of_posible = []
@@ -401,7 +415,7 @@ function generete_food(){
           array_of_posible.push(array_of_0map[xx])
       }
 
-      while(game_array.food.length < game_array.players+100) {
+      while(game_array.food.length < game_array.players) {
         let rand = Math.floor(Math.random()*array_of_posible.length);
         game_array.food.push( array_of_posible[rand])
         array_of_posible.splice(rand,1);
