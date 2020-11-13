@@ -63,13 +63,18 @@ const map_height = 30
 const map_width = 50
 function output_map(){
   for(var h=0;h<game_array.map.length;h++){
-      for(var w = 0;w < game_array.map[h].length;w++){
-        if(game_array.map[h][w] == 1){
-          ctx.fillStyle="#c9c9c9";
-          ctx.fillRect(w*map_cube_size+2,h*map_cube_size+2,map_cube_size-2,map_cube_size-2);
+    for(var w = 0;w < game_array.map[h].length;w++){
+      if(game_array.map[h][w] == 1){
+        ctx.fillStyle="#c9c9c9";
+        ctx.fillRect(w*map_cube_size+2,h*map_cube_size+2,map_cube_size-2,map_cube_size-2);
+      }
     }
-    }
-    }
+  }
+  ctx.fillStyle="pink";
+
+  for(let o = 0; o < game_array.food.length; o++){    
+    ctx.fillRect(game_array.food[o][0]*map_cube_size+2,game_array.food[o][1]*map_cube_size+2,map_cube_size-2,map_cube_size-2);
+  }
 }
 function outputlayer(player) {
   if(player == 1) {
@@ -104,9 +109,85 @@ function check_on_hit_tails(player){
   return false
 }
 
+function find_coordinates_y_start(x,y){
+  
+}
+
+function head_on_map(x,y){
+  if(game_array.map[y][x] == 1)
+    return 1
+  return 0
+}
+
+function find_best_from_left(x, y) {
+  for(let oo = 0; oo < game_array.map[y].length;oo++){
+    if(game_array.map[y][oo] == 0)
+      return([oo, y])
+  }
+} 
+
+
+function find_best_from_right(x, y) {
+  for(let oo = game_array.map[y].length-1; oo > -1;oo--){
+    if(game_array.map[y][oo] == 0)
+      return([oo, y])
+  }
+} 
+
+function find_best_from_top(x, y) {
+  for(let oo = 0; oo < game_array.map.length;oo++){
+    if(game_array.map[oo][x] == 0)
+      return([x, oo])
+  }
+} 
+
+function find_best_from_bottom(x, y) {
+  for(let oo = game_array.map.length-1; oo > -1;oo--){
+    if(game_array.map[oo][x] == 0)
+      return([x, oo])
+  }
+} 
+
 function move_player(num) {
   if(num == 1){
+    
+    
     game_array.player1.head = [game_array.player1.head[0] + game_array.player1.x,game_array.player1.head[1] + game_array.player1.y];
+    if(game_array.player1.head[0]  < 0) {
+      game_array.player1.head = find_best_from_right(game_array.player1.head[0],game_array.player1.head[1])
+    }
+    if(game_array.player1.head[0]  > game_array.map[0].length-1) {
+      game_array.player1.head=find_best_from_left(game_array.player1.head[0],game_array.player1.head[1])
+    }
+    if(game_array.player1.head[1]  < 0 ) {
+      game_array.player1.head=find_best_from_bottom(game_array.player1.head[0],game_array.player1.head[1])
+    }
+    if(game_array.player1.head[1]  > game_array.map.length -1) {
+      game_array.player1.head = find_best_from_top(game_array.player1.head[0],game_array.player1.head[1])
+    }
+    if(head_on_map(game_array.player1.head[0],game_array.player1.head[1])) {
+      
+      
+      if(game_array.player1.x == 1){
+        game_array.player1.head=find_best_from_left(game_array.player1.head[0],game_array.player1.head[1])
+      }
+      if(game_array.player1.x == -1){
+        game_array.player1.head = find_best_from_right(game_array.player1.head[0],game_array.player1.head[1])
+      }
+      if(game_array.player1.y == 1){
+        game_array.player1.head=find_best_from_top(game_array.player1.head[0],game_array.player1.head[1])
+      }
+      if(game_array.player1.y == -1){
+        game_array.player1.head = find_best_from_bottom(game_array.player1.head[0],game_array.player1.head[1])
+      }
+    }
+    for(let gg = 0; gg < game_array.food.length; gg++) {
+      if(game_array.food[gg][0] == game_array.player1.head[0] && game_array.food[gg][1] == game_array.player1.head[1]) {
+        game_array.player1.tail.push(game_array.player1.tail[game_array.player1.tail.length - 1]) 
+        game_array.food.splice(gg, 1);
+      }
+    }
+
     for(let yy = game_array.player1.tail.length; yy >= 0 ;yy--){
       if(yy == 0)
       game_array.player1.tail[0] = game_array.player1.head
@@ -115,12 +196,120 @@ function move_player(num) {
       
     }
   }
+  if(num == 2){
+    
+    
+    game_array.player2.head = [game_array.player2.head[0] + game_array.player2.x,game_array.player2.head[1] + game_array.player2.y];
+    if(game_array.player2.head[0]  < 0) {
+      game_array.player2.head = find_best_from_right(game_array.player2.head[0],game_array.player2.head[1])
+    }
+    if(game_array.player2.head[0]  > game_array.map[0].length-1) {
+      game_array.player2.head=find_best_from_left(game_array.player2.head[0],game_array.player2.head[1])
+    }
+    if(game_array.player2.head[1]  < 0 ) {
+      game_array.player2.head=find_best_from_bottom(game_array.player2.head[0],game_array.player2.head[1])
+    }
+    if(game_array.player2.head[1]  > game_array.map.length -1) {
+      game_array.player2.head = find_best_from_top(game_array.player2.head[0],game_array.player2.head[1])
+    }
+    if(head_on_map(game_array.player2.head[0],game_array.player2.head[1])) {
+      
+      
+      if(game_array.player2.x == 1){
+        game_array.player2.head=find_best_from_left(game_array.player2.head[0],game_array.player2.head[1])
+      }
+      if(game_array.player2.x == -1){
+        game_array.player2.head = find_best_from_right(game_array.player2.head[0],game_array.player2.head[1])
+      }
+      if(game_array.player2.y == 1){
+        game_array.player2.head=find_best_from_top(game_array.player2.head[0],game_array.player2.head[1])
+      }
+      if(game_array.player2.y == -1){
+        game_array.player2.head = find_best_from_bottom(game_array.player2.head[0],game_array.player2.head[1])
+      }
+    }
+    for(let gg = 0; gg < game_array.food.length; gg++) {
+      if(game_array.food[gg][0] == game_array.player2.head[0] && game_array.food[gg][1] == game_array.player2.head[1]) {
+        game_array.player2.tail.push(game_array.player2.tail[game_array.player2.tail.length - 1]) 
+        game_array.food.splice(gg, 1);
+      }
+    }
+
+    for(let yy = game_array.player2.tail.length; yy >= 0 ;yy--){
+      if(yy == 0)
+      game_array.player2.tail[0] = game_array.player2.head
+      else
+      game_array.player2.tail[yy - 1] = game_array.player2.tail[yy - 2]
+      
+    }
+  }
+}
+
+function get_coordinats_of_all_tails() {
+  let array_of_tails = []
+  array_of_tails.push(game_array?.player1?.tail)
+  array_of_tails.push(game_array?.player2?.tail)
+  array_of_tails.push(game_array?.player3?.tail)
+  array_of_tails.push(game_array?.player4?.tail)
+  let array_for_return = []
+  for(let ll = 0; ll < array_of_tails.length; ll++){   
+    if(array_of_tails[ll] != undefined)
+    for(let lll = 0; lll < array_of_tails[ll].length; lll++){
+      array_for_return.push(array_of_tails[ll][lll])
+    }
+  }
+  return array_for_return
+}
+
+function get_coordinats_of_free_map() {
+  let arr_for_return = []
+  for(let i = 0; i < game_array.map.length; i++){
+    for(let ii = 0; ii < game_array.map[i].length; ii++){
+      if(game_array.map[i][ii] == 0)
+        arr_for_return.push([ii, i])
+    } 
+  }
+  return arr_for_return
+}
+
+
+
+function generete_food(){
+  if(game_array.food.length < game_array.players){
+    let array_of_tails = get_coordinats_of_all_tails();
+    let array_of_0map = get_coordinats_of_free_map(); 
+    let array_of_posible = []
+    
+      for(let xx = 0; xx < array_of_0map.length; xx++){
+        let was_in_array = 0;
+        for(let yy = 0; yy < array_of_tails.length; yy++) {
+            if(array_of_0map[xx][0] == array_of_tails[yy][0] && array_of_0map[xx][1] == array_of_tails[yy][1])
+            was_in_array = 1;
+        }
+        if(!was_in_array)
+          array_of_posible.push(array_of_0map[xx])
+      }
+
+      while(game_array.food.length < game_array.players) {
+        let rand = Math.floor(Math.random()*array_of_posible.length);
+        game_array.food.push( array_of_posible[rand])
+        array_of_posible.splice(rand,1);
+      }
+    }
+  }
+
+
+function do_static_work() {
+  game_array.player1.can_move = 1
+  game_array.player2.can_move = 1
 }
 
 function play_game(){
   let canv = document.getElementById("canvas")
   ctx.clearRect(0,0,canv.width,canv.height);
   const first_map = game_array.map
+  do_static_work();
+  generete_food();
   output_map()
   if(game_array.was_click) {
     if(game_array.player1?.life > 0) {
@@ -128,6 +317,13 @@ function play_game(){
         game_array.player1.life=game_array.player1.life-1 
       else{
         move_player(1)
+      }
+    }
+    if(game_array.player2?.life > 0) {
+      if (check_on_hit_tails(game_array.player2))
+        game_array.player2.life=game_array.player2.life-1 
+      else{
+        move_player(2)
       }
     }
   }
@@ -201,7 +397,7 @@ function create_game(players) {
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     ]
     ctx = canvas.getContext("2d");
-    
+    game_array.food = []
     game_array.players = 2;
   game_array.player1 ={
     length: 1,
@@ -212,6 +408,7 @@ function create_game(players) {
     y: 0,
     power: 0,
     life: 1,
+    can_move: 1,
     color:"green",
     head_color: "lime"
   }
@@ -222,13 +419,14 @@ function create_game(players) {
     x: -1,
     y: 0,
     power: 0,
+    can_move: 1,
     life: 1,
     color:"#5cd3ff",
     head_color: "#006aff"
   }
     }
 
-    intervalVarible = setInterval(play_game, 1000/15);   
+    intervalVarible = setInterval(play_game, 1000/10);   
     clickListener = document.addEventListener("keydown", keyPush);
 }
 
@@ -236,56 +434,63 @@ function keyPush(evt) {
   game_array.was_click = 1;
   switch(evt.keyCode){
     case 37:
-    if(game_array.player2.x != -1){
-
+    if(game_array.player2.x != 1 && game_array.player2.can_move &&game_array.player2.x != -1 ){
+      game_array.player2.can_move = 0
       game_array.player2.x = -1
       game_array.player2.y = 0
     }
     break;
     case 38:
-    if(game_array.player2.y != 1){
+    if(game_array.player2.y != 1&& game_array.player2.can_move&&game_array.player2.y != -1 ){
+      game_array.player2.can_move = 0
 
       game_array.player2.x = 0
       game_array.player2.y = -1
     }
     break;
     case 39:
-    if(game_array.player2.x != -1){
+    if(game_array.player2.x != -1 && game_array.player2.can_move &&game_array.player2.x != 1 ){
+      game_array.player2.can_move = 0
 
       game_array.player2.x = 1
       game_array.player2.y = 0
     }
     break;
     case 40:
-      if(game_array.player2.y != -1){
+    if(game_array.player2.y != -1&& game_array.player2.can_move &&game_array.player2.y!= 1 ){
+      game_array.player2.can_move = 0
+
       game_array.player2.x = 0
       game_array.player2.y = 1
-      }
+    }
     break;
     // player 2 arrows /|\
     case 65:
-    if(game_array.player1.x != 1){
-
+    if(game_array.player1.x != 1 && game_array.player1.can_move &&game_array.player1.x != -1 ){
+      game_array.player1.can_move = 0
       game_array.player1.x = -1
       game_array.player1.y = 0
     }
     break;
     case 87:
-    if(game_array.player1.y != 1){
+    if(game_array.player1.y != 1&& game_array.player1.can_move&&game_array.player1.y != -1 ){
+      game_array.player1.can_move = 0
 
       game_array.player1.x = 0
       game_array.player1.y = -1
     }
     break;
     case 68:
-    if(game_array.player1.x != -1){
+    if(game_array.player1.x != -1 && game_array.player1.can_move &&game_array.player1.x != 1 ){
+      game_array.player1.can_move = 0
 
       game_array.player1.x = 1
       game_array.player1.y = 0
     }
     break;
     case 83:
-    if(game_array.player1.y != -1){
+    if(game_array.player1.y != -1&& game_array.player1.can_move &&game_array.player1.y!= 1 ){
+      game_array.player1.can_move = 0
 
       game_array.player1.x = 0
       game_array.player1.y = 1
