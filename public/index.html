@@ -43,7 +43,7 @@
   let ctx 
   let clickListener
   let intervalVarible
-
+  const TimeConst = 100
 
 
   function initing() {
@@ -92,6 +92,9 @@ function outputlayer(player) {
   if(player == 1) {
     for(let hh = 0; hh < game_array.player1.tail.length; hh++) {
       ctx.fillStyle=game_array.player1.color;
+      if(game_array.is_active_immortal > 0 && game_array.who_have_immortal == 1)
+      ctx.fillStyle="white";
+
       ctx.fillRect(game_array.player1.tail[hh][0]*map_cube_size+2,game_array.player1.tail[hh][1]*map_cube_size+2,map_cube_size-2,map_cube_size-2);
     }
     ctx.fillStyle=game_array.player1.head_color;
@@ -100,6 +103,8 @@ function outputlayer(player) {
   if(player == 2) {
     for(let hh = 0; hh < game_array.player2.tail.length; hh++) {
       ctx.fillStyle=game_array.player2.color;
+      if(game_array.is_active_immortal > 0 && game_array.who_have_immortal == 2)
+      ctx.fillStyle="white";
       ctx.fillRect(game_array.player2.tail[hh][0]*map_cube_size+2,game_array.player2.tail[hh][1]*map_cube_size+2,map_cube_size-2,map_cube_size-2);
     }
     ctx.fillStyle=game_array.player2.head_color;
@@ -183,20 +188,67 @@ function generete_buf(){
     while(game_array.which_buff==gg){
     game_array.which_buff = getRandomIntFrom1(4);
     game_array.is_was_toched = 0
-    console.log(game_array.which_buff , game_array.max_was_before_break_count , player_len )
     }
  
 
   }
 }
 
+function check_on_buff(){
+  
+}
+
+function check_on_center_coordinat_buf(jj) {
+  if( (((jj[0]== ((game_array.map[0].length )/2))  || jj[0]== ((game_array.map[0].length )/2) - 1)) && (((jj[1]== ((game_array.map.length )/2))  || jj[1]== ((game_array.map.length)/2) - 1)) && game_array.which_buff > 0 && !game_array.is_was_toched) 
+  return true
+  return false
+
+}
+
+const duration_ice = 20;
+const duration_immortal = 100;
+const duration_fire = 20;
+
 
 function move_player(num) {
   generete_buf();
+ if(num == game_array.who_have_immortal){ 
+  game_array.is_active_immortal--;
+ }
+ game_array.is_ice_active--;
   if(num == 1){
+  // console.log(game_array)
     
     
     game_array.player1.head = [game_array.player1.head[0] + game_array.player1.x,game_array.player1.head[1] + game_array.player1.y];
+    if (check_on_center_coordinat_buf(game_array.player1.head)){
+      game_array.is_was_toched = 1;
+      if (game_array.which_buff == 1) {
+      game_array.is_ice_active = duration_ice;//ice
+      game_array.who_have_ice_buff = 1;
+      }
+      if (game_array.which_buff == 2) {
+      game_array.is_active_immortal = duration_immortal;//immortal
+      game_array.who_have_immortal = 1;
+      }
+      if (game_array.which_buff == 3) {
+
+      game_array.is_fire_active = duration_fire;//fire
+      game_array.who_have_fire_buff = 1;
+      }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     if(game_array.player1.head[0]  < 0) {
       game_array.player1.head = find_best_from_right(game_array.player1.head[0],game_array.player1.head[1])
     }
@@ -242,7 +294,22 @@ function move_player(num) {
   }
   if(num == 2){
     
-    
+    if (check_on_center_coordinat_buf(game_array.player2.head)){
+      game_array.is_was_toched = 1;
+      if (game_array.which_buff == 1) {
+      game_array.is_ice_active = duration_ice;//ice
+      game_array.who_have_ice_buff = 2;
+      }
+      if (game_array.which_buff == 2) {
+      game_array.is_active_immortal = duration_immortal;//immortal
+      game_array.who_have_immortal = 2;
+      }
+      if (game_array.which_buff == 3) {
+
+      game_array.is_fire_active = duration_fire;//fire
+      game_array.who_have_fire_buff = 2;
+      }
+    }
     game_array.player2.head = [game_array.player2.head[0] + game_array.player2.x,game_array.player2.head[1] + game_array.player2.y];
     if(game_array.player2.head[0]  < 0) {
       game_array.player2.head = find_best_from_right(game_array.player2.head[0],game_array.player2.head[1])
@@ -319,7 +386,7 @@ function get_coordinats_of_free_map() {
 
 
 function generete_food(){
-  if(game_array.food.length < game_array.players){
+  if(game_array.food.length < game_array.players + 100){
     let array_of_tails = get_coordinats_of_all_tails();
     let array_of_0map = get_coordinats_of_free_map(); 
     let array_of_posible = []
@@ -334,7 +401,7 @@ function generete_food(){
           array_of_posible.push(array_of_0map[xx])
       }
 
-      while(game_array.food.length < game_array.players) {
+      while(game_array.food.length < game_array.players+100) {
         let rand = Math.floor(Math.random()*array_of_posible.length);
         game_array.food.push( array_of_posible[rand])
         array_of_posible.splice(rand,1);
@@ -358,7 +425,7 @@ function play_game(){
   generete_food();
 
     if(game_array.player1?.life > 0) {
-      if (check_on_hit_tails(game_array.player1)){
+      if (check_on_hit_tails(game_array.player1)&& !(game_array.is_active_immortal > 0 && game_array.who_have_immortal == 1)){
         game_array.player1.life=game_array.player1.life-1
         game_array.player1.tail =[]
         game_array.player1.head =[]
@@ -369,7 +436,7 @@ function play_game(){
       }
     }
     if(game_array.player2?.life > 0) {
-      if (check_on_hit_tails(game_array.player2)){
+      if (check_on_hit_tails(game_array.player2) && !(game_array.is_active_immortal > 0 && game_array.who_have_immortal == 2)){
         game_array.player2.life=game_array.player2.life-1 
         game_array.player2.tail =[]
         game_array.player2.head =[]
@@ -457,10 +524,11 @@ function create_game(players) {
     game_array.max_was_before_break_count = 0;
     game_array.which_buff = 0;
     game_array.is_was_toched = 0;
+
     game_array.is_ice_active = 0;//ice
     game_array.who_have_ice_buff = 0;
     game_array.is_active_immortal = 0;//immortal
-    game_array.who_have_ice_buff = 0;
+    game_array.who_have_immortal = 0;
     game_array.is_fire_active = 0;//fire
     game_array.who_have_fire_buff = 0;
     // buff
@@ -493,7 +561,7 @@ function create_game(players) {
   }
     }
 
-    intervalVarible = setInterval(play_game, 1000/10);   
+    intervalVarible = setInterval(play_game, TimeConst);   
     clickListener = document.addEventListener("keydown", keyPush);
 }
 
