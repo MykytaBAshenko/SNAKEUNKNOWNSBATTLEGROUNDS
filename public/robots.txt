@@ -1,3 +1,24 @@
-# https://www.robotstxt.org/robotstxt.html
-User-agent: *
-Disallow:
+ctx.fillStyle=fire_color;
+      ctx.fillRect(game_array.player2.head[0]*map_cube_size+2+(map_cube_size * game_array.player2.x),game_array.player2.head[1]*map_cube_size+2+(map_cube_size * game_array.player2.y),map_cube_size-2,map_cube_size-2);
+      if(game_array.player2.x == 1 || game_array.player2.x == -1 ){
+      for(let gg = -1; gg < 2;gg++)
+      ctx.fillRect(game_array.player2.head[0]*map_cube_size+2+(map_cube_size * game_array.player2.x +map_cube_size * game_array.player2.x),game_array.player2.head[1]*map_cube_size+2+(map_cube_size * game_array.player2.y + gg * map_cube_size),map_cube_size-2,map_cube_size-2);
+      for(let gg = -2; gg < 3;gg++)
+      ctx.fillRect(game_array.player2.head[0]*map_cube_size+2+(map_cube_size * game_array.player2.x +map_cube_size * game_array.player2.x +map_cube_size * game_array.player2.x),game_array.player2.head[1]*map_cube_size+2+(map_cube_size * game_array.player2.y + gg * map_cube_size),map_cube_size-2,map_cube_size-2);
+      for(let gg = -3; gg < 4;gg++)
+      ctx.fillRect(game_array.player2.head[0]*map_cube_size+2+(map_cube_size * game_array.player2.x+map_cube_size * game_array.player2.x +map_cube_size * game_array.player2.x +map_cube_size * game_array.player2.x),game_array.player2.head[1]*map_cube_size+2+(map_cube_size * game_array.player2.y + gg * map_cube_size),map_cube_size-2,map_cube_size-2);
+    }
+    if(game_array.player2.y == 1 || game_array.player2.y == -1 ){
+      for(let gg = -1; gg < 2;gg++)
+      ctx.fillRect(game_array.player2.head[0]*map_cube_size+2+(map_cube_size * game_array.player2.x + gg * map_cube_size),
+      game_array.player2.head[1]*map_cube_size+2+(map_cube_size * game_array.player2.y + map_cube_size * game_array.player2.y ),
+      map_cube_size-2,map_cube_size-2);
+      for(let gg = -2; gg < 3;gg++)
+      ctx.fillRect(game_array.player2.head[0]*map_cube_size+2+(map_cube_size * game_array.player2.x + gg * map_cube_size),
+      game_array.player2.head[1]*map_cube_size+2+(map_cube_size * game_array.player2.y + map_cube_size * game_array.player2.y + map_cube_size * game_array.player2.y),
+      map_cube_size-2,map_cube_size-2);
+      for(let gg = -3; gg < 4;gg++)
+      ctx.fillRect(game_array.player2.head[0]*map_cube_size+2+(map_cube_size * game_array.player2.x + gg * map_cube_size),
+      game_array.player2.head[1]*map_cube_size+2+(map_cube_size * game_array.player2.y + map_cube_size * game_array.player2.y + map_cube_size * game_array.player2.y + map_cube_size * game_array.player2.y),
+      map_cube_size-2,map_cube_size-2);
+    }

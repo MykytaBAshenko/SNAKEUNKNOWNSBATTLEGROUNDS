@@ -27,11 +27,165 @@
 
 
   <style>
+    *{
+      font-weight: 600;
+      outline: none;
+    }
+    .rules_page{
+      justify-items: center;
+      text-align: center;
+    }
+    .rules_page button{
+      color: white;
+      background: transparent;
+      border: 2px solid white;
+      width: 100%;
+      font-size: 20px;
+      padding: 20px;
+    }
+    .rules_page button:hover{
+      color: black;
+      background: white;
+      border: 2px solid white;
+      cursor: pointer;
+    }
+    .rules_title{
+      padding: 20px 0;
+      font-size: 38px;
+    }
+    .rules_text{
+      font-size: 22px;
+      padding: 20px 0;
+
+    }
+    canvas{
+      max-width: 1400px;
+      border: 2px solid #c9c9c9;
+    }
+    .buffs_list{
+      display: grid;
+      row-gap: 20px;
+      font-size: 20px;
+    }
+    .buffs_list div::after{
+      transform: translate( 20px , -5px);
+    }
+    .pagecontrol{
+      display: grid;
+      height: 60px;
+      grid-template-columns: 1fr 1fr;
+    }
+    .pagecontrol button{
+      background-color: black;
+      border: 2px solid white;
+      color: white;
+      font-size: 30px;
+    }
+    .pagecontrol button:hover{
+      background-color: white;
+      border: 2px solid white;
+      color: black;
+      cursor: pointer;
+    }
+    .orange::after{
+      content: "";
+      width: 38px;
+      height: 38px;
+      position: absolute;
+
+      background-color: orange;
+    }
+ #game{
+   width: 100%;
+ }
+    .red::after{
+      content: "";
+      position: absolute;
+
+      width: 38px;
+      height: 38px;
+      background-color: red;
+    }
+    .white::after{
+      content: "";
+      width: 38px;
+      height: 38px;
+      position: absolute;
+      background-color: white;
+    }
+    body{
+      background-color: black;
+      content: "";
+
+      color: white;
+      display: grid;
+      height: 100%;
+
+      justify-items: center;
+    }
+    .div_header{
+      text-align: center;
+    }
+    .div_header h1{
+      font-size: 55px;
+    }
+    #game{
+      display: grid;
+      justify-items: center;
+      min-height: 100vh;
+    }
+    #game *{
+      width: 100%;
+    }
+    .div_header::before{
+      text-align: center;
+      content: "SnakeUknownsBattleGrounds";
+      position: absolute;
+      transform: translate(-50%,110px);
+    }
     #root{
       position: absolute;
+      display: grid;
+      justify-items: center;
     }
     canvas{
       background: black;
+    }
+    .links_block{
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      padding-bottom:20px ;
+      text-align: center;
+      column-gap: 20px;
+      align-items: end;
+
+    }
+    .links_block a{
+      color: white;
+      text-decoration: none;
+    }
+    .links_block a:hover{
+      text-decoration: underline;
+    }
+    .div_with_btn{
+      display: grid;
+      row-gap: 10px;
+      justify-items: center;
+      
+    }
+    .div_with_btn button{
+      width: 100%;
+      color: white;
+      background-color: transparent;
+      border: 2px solid white;
+      font-size: 30px;
+      max-width: 600px;
+    }
+    .div_with_btn button:hover{
+      color: black;
+      background-color: white;
+      border: 2px solid white;
+      cursor: pointer;
     }
   </style>
 </html>
@@ -43,11 +197,11 @@
   let ctx 
   let clickListener
   let intervalVarible
-  const TimeConst = 100
+  const TimeConst = 90
+  const need_for_win = 32
 
-
-  function initing() {
-    game.innerHTML = ""
+function initing() {
+  game.innerHTML = ""
   game.append(...getFirstPage())
 }
 function get_random_color() 
@@ -78,10 +232,21 @@ function output_map(){
     for(var w = 0;w < game_array.map[h].length;w++){
       if(game_array.map[h][w] == 1){
         ctx.fillStyle="#c9c9c9";
+        
+        if(game_array.winer == 1)
+        ctx.fillStyle= game_array.player1.head_color
+
+        if(game_array.winer == 2)
+        ctx.fillStyle= game_array.player2.head_color
+        if(game_array.winer == 3)
+        ctx.fillStyle= game_array.player2.head_color
+        if(game_array.winer == 4)
+        ctx.fillStyle= game_array.player2.head_color
         ctx.fillRect(w*map_cube_size+2,h*map_cube_size+2,map_cube_size-2,map_cube_size-2);
       }
     }
   }
+  if(!game_array.winer){
   ctx.fillStyle="pink";
 
   for(let o = 0; o < game_array.food.length; o++){    
@@ -97,9 +262,16 @@ function output_map(){
     ctx.fillStyle="white";
     ctx.fillRect(map_cube_size*((game_array.map[0].length )/2-1)+2,map_cube_size*((game_array.map.length )/2-1)+2,map_cube_size*2-2,map_cube_size*2-2);
   }
+  if(!game_array.is_was_toched && game_array.which_buff == 3){
+    ctx.fillStyle="red";
+    ctx.fillRect(map_cube_size*((game_array.map[0].length )/2-1)+2,map_cube_size*((game_array.map.length )/2-1)+2,map_cube_size*2-2,map_cube_size*2-2);
+  }
+}
 }
 
 const immortal_color = "orange"
+const fire_color = "red"
+
 
 function outputlayer(player) {
   if(player == 1) {
@@ -107,7 +279,6 @@ function outputlayer(player) {
       ctx.fillStyle=game_array.player1.color;
       if(game_array.is_active_immortal > 0 && game_array.who_have_immortal == 1)
       ctx.fillStyle=immortal_color;
-
       ctx.fillRect(game_array.player1.tail[hh][0]*map_cube_size+2,game_array.player1.tail[hh][1]*map_cube_size+2,map_cube_size-2,map_cube_size-2);
     }
     ctx.fillStyle=game_array.player1.head_color;
@@ -123,6 +294,57 @@ function outputlayer(player) {
     ctx.fillStyle=game_array.player2.head_color;
     ctx.fillRect(game_array.player2.head[0]*map_cube_size+2,game_array.player2.head[1]*map_cube_size+2,map_cube_size-2,map_cube_size-2);
   }
+  if(game_array.is_fire_active > 0 && game_array.who_have_fire_buff == 1) {
+      ctx.fillStyle=fire_color;
+      ctx.fillRect(game_array.player1.head[0]*map_cube_size+2+(map_cube_size * game_array.player1.x),game_array.player1.head[1]*map_cube_size+2+(map_cube_size * game_array.player1.y),map_cube_size-2,map_cube_size-2);
+      if(game_array.player1.x == 1 || game_array.player1.x == -1 ){
+      for(let gg = -1; gg < 2;gg++)
+      ctx.fillRect(game_array.player1.head[0]*map_cube_size+2+(map_cube_size * game_array.player1.x +map_cube_size * game_array.player1.x),game_array.player1.head[1]*map_cube_size+2+(map_cube_size * game_array.player1.y + gg * map_cube_size),map_cube_size-2,map_cube_size-2);
+      for(let gg = -2; gg < 3;gg++)
+      ctx.fillRect(game_array.player1.head[0]*map_cube_size+2+(map_cube_size * game_array.player1.x +map_cube_size * game_array.player1.x +map_cube_size * game_array.player1.x),game_array.player1.head[1]*map_cube_size+2+(map_cube_size * game_array.player1.y + gg * map_cube_size),map_cube_size-2,map_cube_size-2);
+      for(let gg = -3; gg < 4;gg++)
+      ctx.fillRect(game_array.player1.head[0]*map_cube_size+2+(map_cube_size * game_array.player1.x+map_cube_size * game_array.player1.x +map_cube_size * game_array.player1.x +map_cube_size * game_array.player1.x),game_array.player1.head[1]*map_cube_size+2+(map_cube_size * game_array.player1.y + gg * map_cube_size),map_cube_size-2,map_cube_size-2);
+    }
+    if(game_array.player1.y == 1 || game_array.player1.y == -1 ){
+      for(let gg = -1; gg < 2;gg++)
+      ctx.fillRect(game_array.player1.head[0]*map_cube_size+2+(map_cube_size * game_array.player1.x + gg * map_cube_size),
+      game_array.player1.head[1]*map_cube_size+2+(map_cube_size * game_array.player1.y + map_cube_size * game_array.player1.y ),
+      map_cube_size-2,map_cube_size-2);
+      for(let gg = -2; gg < 3;gg++)
+      ctx.fillRect(game_array.player1.head[0]*map_cube_size+2+(map_cube_size * game_array.player1.x + gg * map_cube_size),
+      game_array.player1.head[1]*map_cube_size+2+(map_cube_size * game_array.player1.y + map_cube_size * game_array.player1.y + map_cube_size * game_array.player1.y),
+      map_cube_size-2,map_cube_size-2);
+      for(let gg = -3; gg < 4;gg++)
+      ctx.fillRect(game_array.player1.head[0]*map_cube_size+2+(map_cube_size * game_array.player1.x + gg * map_cube_size),
+      game_array.player1.head[1]*map_cube_size+2+(map_cube_size * game_array.player1.y + map_cube_size * game_array.player1.y + map_cube_size * game_array.player1.y + map_cube_size * game_array.player1.y),
+      map_cube_size-2,map_cube_size-2);}
+    }
+    if(game_array.is_fire_active > 0 && game_array.who_have_fire_buff == 2) {
+      ctx.fillStyle=fire_color;
+      ctx.fillRect(game_array.player2.head[0]*map_cube_size+2+(map_cube_size * game_array.player2.x),game_array.player2.head[1]*map_cube_size+2+(map_cube_size * game_array.player2.y),map_cube_size-2,map_cube_size-2);
+      if(game_array.player2.x == 1 || game_array.player2.x == -1 ){
+      for(let gg = -1; gg < 2;gg++)
+      ctx.fillRect(game_array.player2.head[0]*map_cube_size+2+(map_cube_size * game_array.player2.x +map_cube_size * game_array.player2.x),game_array.player2.head[1]*map_cube_size+2+(map_cube_size * game_array.player2.y + gg * map_cube_size),map_cube_size-2,map_cube_size-2);
+      for(let gg = -2; gg < 3;gg++)
+      ctx.fillRect(game_array.player2.head[0]*map_cube_size+2+(map_cube_size * game_array.player2.x +map_cube_size * game_array.player2.x +map_cube_size * game_array.player2.x),game_array.player2.head[1]*map_cube_size+2+(map_cube_size * game_array.player2.y + gg * map_cube_size),map_cube_size-2,map_cube_size-2);
+      for(let gg = -3; gg < 4;gg++)
+      ctx.fillRect(game_array.player2.head[0]*map_cube_size+2+(map_cube_size * game_array.player2.x+map_cube_size * game_array.player2.x +map_cube_size * game_array.player2.x +map_cube_size * game_array.player2.x),game_array.player2.head[1]*map_cube_size+2+(map_cube_size * game_array.player2.y + gg * map_cube_size),map_cube_size-2,map_cube_size-2);
+    }
+    if(game_array.player2.y == 1 || game_array.player2.y == -1 ){
+      for(let gg = -1; gg < 2;gg++)
+      ctx.fillRect(game_array.player2.head[0]*map_cube_size+2+(map_cube_size * game_array.player2.x + gg * map_cube_size),
+      game_array.player2.head[1]*map_cube_size+2+(map_cube_size * game_array.player2.y + map_cube_size * game_array.player2.y ),
+      map_cube_size-2,map_cube_size-2);
+      for(let gg = -2; gg < 3;gg++)
+      ctx.fillRect(game_array.player2.head[0]*map_cube_size+2+(map_cube_size * game_array.player2.x + gg * map_cube_size),
+      game_array.player2.head[1]*map_cube_size+2+(map_cube_size * game_array.player2.y + map_cube_size * game_array.player2.y + map_cube_size * game_array.player2.y),
+      map_cube_size-2,map_cube_size-2);
+      for(let gg = -3; gg < 4;gg++)
+      ctx.fillRect(game_array.player2.head[0]*map_cube_size+2+(map_cube_size * game_array.player2.x + gg * map_cube_size),
+      game_array.player2.head[1]*map_cube_size+2+(map_cube_size * game_array.player2.y + map_cube_size * game_array.player2.y + map_cube_size * game_array.player2.y + map_cube_size * game_array.player2.y),
+      map_cube_size-2,map_cube_size-2);
+    }
+    }
 }
 
 function check_on_hit_tails(player){
@@ -204,12 +426,9 @@ function generete_buf(){
   }
 }
 
-function check_on_buff(){
-  
-}
 
 function check_on_center_coordinat_buf(jj) {
-  if( (((jj[0]== ((game_array.map[0].length )/2))  || jj[0]== ((game_array.map[0].length )/2) - 1)) && (((jj[1]== ((game_array.map.length )/2))  || jj[1]== ((game_array.map.length)/2) - 1)) && game_array.which_buff > 0 && !game_array.is_was_toched) 
+  if( (((jj[0]==((game_array.map[0].length )/2))  || jj[0]==((game_array.map[0].length )/2) - 1)) && (((jj[1]==((game_array.map.length )/2))  || jj[1]==((game_array.map.length)/2) - 1)) && game_array.which_buff > 0 && !game_array.is_was_toched) 
   return true
   return false
 
@@ -217,19 +436,13 @@ function check_on_center_coordinat_buf(jj) {
 
 const duration_ice = 80;
 const duration_immortal = 100;
-const duration_fire = 20;
+const duration_fire = 50;
 
 
 function move_player(num) {
   generete_buf();
- if(num == game_array.who_have_immortal){ 
-  game_array.is_active_immortal--;
- }
- if(num == game_array.who_have_ice_buff ){ 
-  game_array.is_ice_active--;
- }
-
-  if(num == 1 &&( (game_array.is_ice_active >0 && game_array.who_have_ice_buff == 1) || !game_array.is_ice_active || game_array.is_ice_active < 0)) {
+ 
+  if(num == 1 ) {
   // console.log(game_array)
     
     
@@ -429,28 +642,167 @@ function do_static_work() {
   game_array.player2.can_move = 1
 }
 
+function check_on_hit_fire(player){
+  if(game_array.is_fire_active < 1)
+    return false
+  if(player == 1 && game_array.who_have_fire_buff == 1)
+    return false
+  if(player == 2 && game_array.who_have_fire_buff == 2)
+    return false
+
+  let danger_array = []
+  if(game_array.who_have_fire_buff == 1){
+    danger_array.push([game_array.player1.head[0]+game_array.player1.x,game_array.player1.head[1]+game_array.player1.y] )
+    if(game_array.player1.x == 1 || game_array.player1.x == -1 ){
+      for(let gg = -1; gg < 2;gg++)
+      danger_array.push([game_array.player1.head[0]+game_array.player1.x+game_array.player1.x, 
+      game_array.player1.head[1]+ game_array.player1.y + gg ])
+      for(let gg = -2; gg < 3;gg++)
+      danger_array.push([game_array.player1.head[0]+game_array.player1.x+game_array.player1.x+game_array.player1.x, 
+      game_array.player1.head[1]+ game_array.player1.y + gg ])
+      for(let gg = -3; gg < 4;gg++)
+      danger_array.push([game_array.player1.head[0]+game_array.player1.x+game_array.player1.x+game_array.player1.x+game_array.player1.x, 
+      game_array.player1.head[1]+ game_array.player1.y + gg ])
+    }
+    if(game_array.player1.y == 1 || game_array.player1.y == -1 ){
+      for(let gg = -1; gg < 2;gg++)
+      danger_array.push([game_array.player1.head[0]+game_array.player1.x+gg, 
+      game_array.player1.head[1]+ game_array.player1.y + game_array.player1.y ])
+      for(let gg = -2; gg < 3;gg++)
+      danger_array.push([game_array.player1.head[0]+game_array.player1.x+gg, 
+      game_array.player1.head[1]+ game_array.player1.y + game_array.player1.y + game_array.player1.y ])
+      for(let gg = -3; gg < 4;gg++)
+      danger_array.push([game_array.player1.head[0]+game_array.player1.x+gg, 
+      game_array.player1.head[1]+ game_array.player1.y + game_array.player1.y + game_array.player1.y + game_array.player1.y ])
+    }
+  }
+  if(game_array.who_have_fire_buff == 2){
+    danger_array.push([game_array.player2.head[0]+game_array.player2.x,game_array.player2.head[1]+game_array.player2.y] )
+    if(game_array.player2.x == 1 || game_array.player2.x == -1 ){
+      for(let gg = -1; gg < 2;gg++)
+      danger_array.push([game_array.player2.head[0]+game_array.player2.x+game_array.player2.x, 
+      game_array.player2.head[1]+ game_array.player2.y + gg ])
+      for(let gg = -2; gg < 3;gg++)
+      danger_array.push([game_array.player2.head[0]+game_array.player2.x+game_array.player2.x+game_array.player2.x, 
+      game_array.player2.head[1]+ game_array.player2.y + gg ])
+      for(let gg = -3; gg < 4;gg++)
+      danger_array.push([game_array.player2.head[0]+game_array.player2.x+game_array.player2.x+game_array.player2.x+game_array.player2.x, 
+      game_array.player2.head[1]+ game_array.player2.y + gg ])
+    }
+    if(game_array.player2.y == 1 || game_array.player2.y == -1 ){
+      for(let gg = -1; gg < 2;gg++)
+      danger_array.push([game_array.player2.head[0]+game_array.player2.x+gg, 
+      game_array.player2.head[1]+ game_array.player2.y + game_array.player2.y ])
+      for(let gg = -2; gg < 3;gg++)
+      danger_array.push([game_array.player2.head[0]+game_array.player2.x+gg, 
+      game_array.player2.head[1]+ game_array.player2.y + game_array.player2.y + game_array.player2.y ])
+      for(let gg = -3; gg < 4;gg++)
+      danger_array.push([game_array.player2.head[0]+game_array.player2.x+gg, 
+      game_array.player2.head[1]+ game_array.player2.y + game_array.player2.y + game_array.player2.y + game_array.player2.y ])
+    }
+  }
+  let new_head_cor
+  let old_head_cor
+
+  if(player == 1){
+    new_head_cor = [game_array.player1.head[0]+game_array.player1.x,game_array.player1.head[1]+game_array.player1.y]
+    old_head_cor = [game_array.player1.head[0],game_array.player1.head[1]]
+
+  
+  }
+  if(player == 2){
+    new_head_cor = [game_array.player2.head[0]+game_array.player2.x,game_array.player2.head[1]+game_array.player2.y]
+    old_head_cor = [game_array.player2.head[0],game_array.player2.head[1]]
+    
+  }
+  for(let p = 0; p < danger_array.length; p++){
+    if((danger_array[p][0] == new_head_cor[0] && danger_array[p][1] == new_head_cor[1])||(danger_array[p][0] == old_head_cor[0] && danger_array[p][1] == old_head_cor[1]))
+      return true
+  }
+  return false
+}
+  if(game_array.is_fire_active > 0 && game_array.who_have_fire_buff == 1) {
+      ctx.fillStyle=fire_color;
+      ctx.fillRect(game_array.player1.head[0]*map_cube_size+2+(map_cube_size * game_array.player1.x),game_array.player1.head[1]*map_cube_size+2+(map_cube_size * game_array.player1.y),map_cube_size-2,map_cube_size-2);
+      if(game_array.player1.x == 1 || game_array.player1.x == -1 ){
+      for(let gg = -1; gg < 2;gg++)
+      ctx.fillRect(game_array.player1.head[0]*map_cube_size+2+(map_cube_size * game_array.player1.x +map_cube_size * game_array.player1.x),game_array.player1.head[1]*map_cube_size+2+(map_cube_size * game_array.player1.y + gg * map_cube_size),map_cube_size-2,map_cube_size-2);
+      for(let gg = -2; gg < 3;gg++)
+      ctx.fillRect(game_array.player1.head[0]*map_cube_size+2+(map_cube_size * game_array.player1.x +map_cube_size * game_array.player1.x +map_cube_size * game_array.player1.x),game_array.player1.head[1]*map_cube_size+2+(map_cube_size * game_array.player1.y + gg * map_cube_size),map_cube_size-2,map_cube_size-2);
+      for(let gg = -3; gg < 4;gg++)
+      ctx.fillRect(game_array.player1.head[0]*map_cube_size+2+(map_cube_size * game_array.player1.x+map_cube_size * game_array.player1.x +map_cube_size * game_array.player1.x +map_cube_size * game_array.player1.x),game_array.player1.head[1]*map_cube_size+2+(map_cube_size * game_array.player1.y + gg * map_cube_size),map_cube_size-2,map_cube_size-2);
+    }
+    if(game_array.player1.y == 1 || game_array.player1.y == -1 ){
+      for(let gg = -1; gg < 2;gg++)
+      ctx.fillRect(game_array.player1.head[0]*map_cube_size+2+(map_cube_size * game_array.player1.x + gg * map_cube_size),
+      game_array.player1.head[1]*map_cube_size+2+(map_cube_size * game_array.player1.y + map_cube_size * game_array.player1.y ),
+      map_cube_size-2,map_cube_size-2);
+      for(let gg = -2; gg < 3;gg++)
+      ctx.fillRect(game_array.player1.head[0]*map_cube_size+2+(map_cube_size * game_array.player1.x + gg * map_cube_size),
+      game_array.player1.head[1]*map_cube_size+2+(map_cube_size * game_array.player1.y + map_cube_size * game_array.player1.y + map_cube_size * game_array.player1.y),
+      map_cube_size-2,map_cube_size-2);
+      for(let gg = -3; gg < 4;gg++)
+      ctx.fillRect(game_array.player1.head[0]*map_cube_size+2+(map_cube_size * game_array.player1.x + gg * map_cube_size),
+      game_array.player1.head[1]*map_cube_size+2+(map_cube_size * game_array.player1.y + map_cube_size * game_array.player1.y + map_cube_size * game_array.player1.y + map_cube_size * game_array.player1.y),
+      map_cube_size-2,map_cube_size-2);}
+    }
+
+    function check_on_win(){
+      if(game_array.player1.tail.length > need_for_win - 1)
+      game_array.winer = 1;
+      
+      if(game_array?.player2?.tail?.length > need_for_win - 1)
+      game_array.winer = 2;
+
+      if(game_array?.player3?.tail?.length > need_for_win - 1)
+      game_array.winer = 3;
+
+      if(game_array?.player4?.tail?.length > need_for_win - 1)
+      game_array.winer = 4;
+      if(game_array.player1?.life && !game_array.player2?.life && !game_array.player3?.life && !game_array.player4?.life)
+      game_array.winer = 1;
+      if(!game_array.player1?.life && game_array.player2?.life && !game_array.player3?.life && !game_array.player4?.life)
+      game_array.winer = 2;
+      if(!game_array.player1?.life && !game_array.player2?.life && game_array.player3?.life && !game_array.player4?.life)
+      game_array.winer = 3;
+      if(!game_array.player1?.life && !game_array.player2?.life && !game_array.player3?.life && game_array.player4?.life)
+      game_array.winer = 4;
+    }
+
+
 function play_game(){
   let canv = document.getElementById("canvas")
   ctx.clearRect(0,0,canv.width,canv.height);
-  const first_map = game_array.map
-  do_static_work();
-  output_map()
-  if(game_array.was_click) {
-  generete_food();
 
-    if(game_array.player1?.life > 0) {
-      if (check_on_hit_tails(game_array.player1)&& !(game_array.is_active_immortal > 0 && game_array.who_have_immortal == 1)){
+  if(game_array.was_click && !game_array.is_paused) {
+  check_on_win()
+  if(game_array.winer){
+    clearInterval(intervalVarible);
+    output_map()
+    return
+  }
+  generete_food();
+      if(game_array.who_have_immortal){ 
+      game_array.is_active_immortal--;
+    }
+    if(game_array.who_have_ice_buff ){ 
+      game_array.is_ice_active--;
+    }
+    if(game_array.who_have_fire_buff ){ 
+      game_array.is_fire_active--;
+    }
+    if(game_array.player1?.life > 0 && ( (game_array.is_ice_active >0 && game_array.who_have_ice_buff == 1) || !game_array.is_ice_active || game_array.is_ice_active < 0)) {
+      if ((check_on_hit_tails(game_array.player1)||check_on_hit_fire(1))&& !(game_array.is_active_immortal > 0 && game_array.who_have_immortal == 1)){
         game_array.player1.life=game_array.player1.life-1
         game_array.player1.tail =[]
         game_array.player1.head =[]
-
       } 
       else{
         move_player(1)
       }
     }
-    if(game_array.player2?.life > 0) {
-      if (check_on_hit_tails(game_array.player2) && !(game_array.is_active_immortal > 0 && game_array.who_have_immortal == 2)){
+    if(game_array.player2?.life > 0 && ( (game_array.is_ice_active >0 && game_array.who_have_ice_buff == 2) || !game_array.is_ice_active || game_array.is_ice_active < 0)) {
+      if ((check_on_hit_tails(game_array.player2)||check_on_hit_fire(2)) && !(game_array.is_active_immortal > 0 && game_array.who_have_immortal == 2)){
         game_array.player2.life=game_array.player2.life-1 
         game_array.player2.tail =[]
         game_array.player2.head =[]
@@ -466,9 +818,9 @@ function play_game(){
   if(game_array?.player2?.life == 1){
     outputlayer(2)
   }
-
+  do_static_work();
+  output_map()
   
-  game_array.map = first_map
 }
 
 function create_game(players) {
@@ -478,19 +830,22 @@ function create_game(players) {
   let btn_rules = document.createElement("button")
   btn_rules.onclick = function () {
             show_rules();
+    clearInterval(intervalVarible);
+
   }
   btn_rules.innerHTML= "Rules"
 
   let btn_back = document.createElement("button")
   btn_back.innerHTML= "Back"
   btn_back.onclick = function () {
-    () =>initing();
+    clearInterval(intervalVarible);
+    initing();
   }
   pagecontrol.append(btn_rules)
   pagecontrol.append(btn_back)
   game.append(pagecontrol)
   let canvas = document.createElement("canvas")
-  canvas.width = "1353"
+  canvas.width = "1354"
   canvas.height = "813"
   canvas.id="canvas"
   game_array.was_click = 0;
@@ -546,6 +901,8 @@ function create_game(players) {
     game_array.is_fire_active = 0;//fire
     game_array.who_have_fire_buff = 0;
     // buff
+    game_array.winer = 0;
+    game_array.is_paused = false
   game_array.player1 ={
     length: 1,
     player: 1,
@@ -582,6 +939,8 @@ function create_game(players) {
 function keyPush(evt) {
   game_array.was_click = 1;
   switch(evt.keyCode){
+    case 13:
+    game_array.is_paused = !game_array.is_paused
     case 37:
     if(game_array.player2.x != 1 && game_array.player2.can_move &&game_array.player2.x != -1 ){
       game_array.player2.can_move = 0
@@ -699,9 +1058,10 @@ function getFirstPage() {
   link_creator1.innerHTML= "Mykyta Bashenko"
   links_block.append(link_creator1)
   let link_creator2 = document.createElement('a')
-  link_creator2.href= "#"
+  link_creator2.href= "https://github.com/vkmetyk"
   link_creator2.target= "blank"
-  link_creator2.innerHTML= "vkme"
+  link_creator2.innerHTML= "vkmetyk"
+
   links_block.append(link_source_code)
   links_block.append(link_creator1)
   links_block.append(link_creator2)
@@ -715,7 +1075,16 @@ function show_rules() {
   <div class="rules_page">
     <div><button onClick="initing()">Back on start page</button></div>
     <div class="rules_title">Rules</div>
-    <div> hui</div>
+    <div class="rules_text"> 
+The rules are simple, collect ${need_for_win} food or be the last on the map.
+Don't touch your tail or your opponent's tail. The wall will teleport you to the other end of the map.
+Also collect buffs to destroy your opponent.
+</div>
+<div class="buffs_list">
+  <div class="orange">You become immortal on ${duration_immortal} steps</div>
+  <div class="white">Evryone except you stop moving on ${duration_ice} steps</div>
+  <div class="red">Begins to breathe fire ${duration_fire} steps</div>
+  </div>
   </div>
   `
 }
