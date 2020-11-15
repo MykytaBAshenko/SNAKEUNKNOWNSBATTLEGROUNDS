@@ -1315,11 +1315,11 @@ function getFirstPage() {
   result.push(links_block)
   return result
 }
-
+initing()
 function show_rules() {
   game.innerHTML = `
   <div class="rules_page">
-    <div><button onClick="initing()">Back on start page</button></div>
+    <div><button id="dumb_btn">Back on start page</button></div>
     <div class="rules_title">Rules</div>
     <div class="rules_text"> 
 The rules are simple, collect ${need_for_win} food or be the last on the map.
@@ -1331,8 +1331,46 @@ Also collect buffs to destroy your opponent.
   <div class="white">Evryone except you stop moving on ${duration_ice} steps</div>
   <div class="red">Begins to breathe fire ${duration_fire} steps</div>
   </div>
+  <div class="control_list">
+  <h1>Control</h1>
+  <div class="control_list_shell">
+    <div class="row_control green">
+      <div>W</div>
+      <div>A</div>
+      <div>S</div>
+      <div>D</div>
+    </div>
+    <div class="row_control blue">
+      <div>&#8593;</div>
+      <div>&#8592;</div>
+      <div>&#8595;</div>
+      <div>&#8594;</div>
+    </div>
+    <div class="row_control redd">
+      <div>G</div>
+      <div>V</div>
+      <div>B</div>
+      <div>N</div>
+    </div>
+    <div class="row_control yellow">
+      <div>K</div>
+      <div>O</div>
+      <div>L</div>
+      <div>:</div>
+    </div>
+    <div class="controll_div">
+      On click Enter game paused<br><br>
+      On click R in the end of game restarted
+    </div>
+    </div>
+
+  </div>
   </div>
   `
+  let dumb_btn =document.getElementById('dumb_btn')
+  dumb_btn.onclick = function() {
+    initing()
+  }
 }
 
-initing()
+
