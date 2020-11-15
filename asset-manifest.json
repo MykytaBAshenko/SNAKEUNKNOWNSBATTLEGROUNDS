@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/snakeunknownsbattlegrounds/static/css/main.8c8b27cf.chunk.css",
+    "main.js": "/snakeunknownsbattlegrounds/static/js/main.e49f860e.chunk.js",
+    "main.js.map": "/snakeunknownsbattlegrounds/static/js/main.e49f860e.chunk.js.map",
+    "runtime-main.js": "/snakeunknownsbattlegrounds/static/js/runtime-main.95001eba.js",
+    "runtime-main.js.map": "/snakeunknownsbattlegrounds/static/js/runtime-main.95001eba.js.map",
+    "static/js/2.2dfc1b1a.chunk.js": "/snakeunknownsbattlegrounds/static/js/2.2dfc1b1a.chunk.js",
+    "static/js/2.2dfc1b1a.chunk.js.map": "/snakeunknownsbattlegrounds/static/js/2.2dfc1b1a.chunk.js.map",
+    "static/js/3.2369984b.chunk.js": "/snakeunknownsbattlegrounds/static/js/3.2369984b.chunk.js",
+    "static/js/3.2369984b.chunk.js.map": "/snakeunknownsbattlegrounds/static/js/3.2369984b.chunk.js.map",
+    "index.html": "/snakeunknownsbattlegrounds/index.html",
+    "static/css/main.8c8b27cf.chunk.css.map": "/snakeunknownsbattlegrounds/static/css/main.8c8b27cf.chunk.css.map",
+    "static/js/2.2dfc1b1a.chunk.js.LICENSE.txt": "/snakeunknownsbattlegrounds/static/js/2.2dfc1b1a.chunk.js.LICENSE.txt",
+    "static/media/logo.103b5fa1.svg": "/snakeunknownsbattlegrounds/static/media/logo.103b5fa1.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.95001eba.js",
+    "static/js/2.2dfc1b1a.chunk.js",
+    "static/css/main.8c8b27cf.chunk.css",
+    "static/js/main.e49f860e.chunk.js"
+  ]
+}

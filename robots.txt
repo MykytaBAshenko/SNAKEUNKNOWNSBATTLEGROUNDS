@@ -1,0 +1,31 @@
+case 86:
+    if(game_array.player3.x != 1 && game_array.player3.can_move &&game_array.player3.x != -1 ){
+      game_array.player3.can_move = 0
+      game_array.player3.x = -1
+      game_array.player3.y = 0
+    }
+    break;
+    case 71:
+    if(game_array.player3.y != 1&& game_array.player3.can_move&&game_array.player3.y != -1 ){
+      game_array.player3.can_move = 0
+
+      game_array.player3.x = 0
+      game_array.player3.y = -1
+    }
+    break;
+    case 78:
+    if(game_array.player3.x != -1 && game_array.player3.can_move &&game_array.player3.x != 1 ){
+      game_array.player3.can_move = 0
+
+      game_array.player3.x = 1
+      game_array.player3.y = 0
+    }
+    break;
+    case 66:
+    if(game_array.player3.y != -1&& game_array.player3.can_move &&game_array.player3.y!= 1 ){
+      game_array.player3.can_move = 0
+
+      game_array.player3.x = 0
+      game_array.player3.y = 1
+    }
+    break;
