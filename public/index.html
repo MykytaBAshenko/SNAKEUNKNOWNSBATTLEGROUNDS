@@ -239,9 +239,9 @@ function output_map(){
         if(game_array.winer == 2)
         ctx.fillStyle= game_array.player2.head_color
         if(game_array.winer == 3)
-        ctx.fillStyle= game_array.player2.head_color
+        ctx.fillStyle= game_array.player3.head_color
         if(game_array.winer == 4)
-        ctx.fillStyle= game_array.player2.head_color
+        ctx.fillStyle= game_array.player4.head_color
         ctx.fillRect(w*map_cube_size+2,h*map_cube_size+2,map_cube_size-2,map_cube_size-2);
       }
     }
@@ -443,9 +443,6 @@ function move_player(num) {
   generete_buf();
  
   if(num == 1 ) {
-  // console.log(game_array)
-    
-    
     game_array.player1.head = [game_array.player1.head[0] + game_array.player1.x,game_array.player1.head[1] + game_array.player1.y];
     if (check_on_center_coordinat_buf(game_array.player1.head)){
       game_array.is_was_toched = 1;
@@ -463,17 +460,6 @@ function move_player(num) {
       game_array.who_have_fire_buff = 1;
       }
     }
-
-
-
-
-
-
-
-
-
-
-
 
     if(game_array.player1.head[0]  < 0) {
       game_array.player1.head = find_best_from_right(game_array.player1.head[0],game_array.player1.head[1])
@@ -518,8 +504,9 @@ function move_player(num) {
       
     }
   }
-  if(num == 2 &&( (game_array.is_ice_active >0 && game_array.who_have_ice_buff == 2) || !game_array.is_ice_active || game_array.is_ice_active < 0)) {
+  if(num == 2) {
 
+    game_array.player2.head = [game_array.player2.head[0] + game_array.player2.x,game_array.player2.head[1] + game_array.player2.y];
     
     if (check_on_center_coordinat_buf(game_array.player2.head)){
       game_array.is_was_toched = 1;
@@ -537,7 +524,6 @@ function move_player(num) {
       game_array.who_have_fire_buff = 2;
       }
     }
-    game_array.player2.head = [game_array.player2.head[0] + game_array.player2.x,game_array.player2.head[1] + game_array.player2.y];
     if(game_array.player2.head[0]  < 0) {
       game_array.player2.head = find_best_from_right(game_array.player2.head[0],game_array.player2.head[1])
     }
@@ -721,31 +707,7 @@ function check_on_hit_fire(player){
   }
   return false
 }
-  if(game_array.is_fire_active > 0 && game_array.who_have_fire_buff == 1) {
-      ctx.fillStyle=fire_color;
-      ctx.fillRect(game_array.player1.head[0]*map_cube_size+2+(map_cube_size * game_array.player1.x),game_array.player1.head[1]*map_cube_size+2+(map_cube_size * game_array.player1.y),map_cube_size-2,map_cube_size-2);
-      if(game_array.player1.x == 1 || game_array.player1.x == -1 ){
-      for(let gg = -1; gg < 2;gg++)
-      ctx.fillRect(game_array.player1.head[0]*map_cube_size+2+(map_cube_size * game_array.player1.x +map_cube_size * game_array.player1.x),game_array.player1.head[1]*map_cube_size+2+(map_cube_size * game_array.player1.y + gg * map_cube_size),map_cube_size-2,map_cube_size-2);
-      for(let gg = -2; gg < 3;gg++)
-      ctx.fillRect(game_array.player1.head[0]*map_cube_size+2+(map_cube_size * game_array.player1.x +map_cube_size * game_array.player1.x +map_cube_size * game_array.player1.x),game_array.player1.head[1]*map_cube_size+2+(map_cube_size * game_array.player1.y + gg * map_cube_size),map_cube_size-2,map_cube_size-2);
-      for(let gg = -3; gg < 4;gg++)
-      ctx.fillRect(game_array.player1.head[0]*map_cube_size+2+(map_cube_size * game_array.player1.x+map_cube_size * game_array.player1.x +map_cube_size * game_array.player1.x +map_cube_size * game_array.player1.x),game_array.player1.head[1]*map_cube_size+2+(map_cube_size * game_array.player1.y + gg * map_cube_size),map_cube_size-2,map_cube_size-2);
-    }
-    if(game_array.player1.y == 1 || game_array.player1.y == -1 ){
-      for(let gg = -1; gg < 2;gg++)
-      ctx.fillRect(game_array.player1.head[0]*map_cube_size+2+(map_cube_size * game_array.player1.x + gg * map_cube_size),
-      game_array.player1.head[1]*map_cube_size+2+(map_cube_size * game_array.player1.y + map_cube_size * game_array.player1.y ),
-      map_cube_size-2,map_cube_size-2);
-      for(let gg = -2; gg < 3;gg++)
-      ctx.fillRect(game_array.player1.head[0]*map_cube_size+2+(map_cube_size * game_array.player1.x + gg * map_cube_size),
-      game_array.player1.head[1]*map_cube_size+2+(map_cube_size * game_array.player1.y + map_cube_size * game_array.player1.y + map_cube_size * game_array.player1.y),
-      map_cube_size-2,map_cube_size-2);
-      for(let gg = -3; gg < 4;gg++)
-      ctx.fillRect(game_array.player1.head[0]*map_cube_size+2+(map_cube_size * game_array.player1.x + gg * map_cube_size),
-      game_array.player1.head[1]*map_cube_size+2+(map_cube_size * game_array.player1.y + map_cube_size * game_array.player1.y + map_cube_size * game_array.player1.y + map_cube_size * game_array.player1.y),
-      map_cube_size-2,map_cube_size-2);}
-    }
+
 
     function check_on_win(){
       if(game_array.player1.tail.length > need_for_win - 1)
@@ -851,7 +813,7 @@ function create_game(players) {
   game_array.was_click = 0;
 
   game.append(canvas)
-  if(players == 2) {
+  if(players > 1) {
   game_array.map = [
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
@@ -930,17 +892,68 @@ function create_game(players) {
     color:"#5cd3ff",
     head_color: "#006aff"
   }
+  if(players > 2) {
+    game_array.players = 3;
+
+    game_array.player3 ={
+    length: 1,
+    tail: [[5,24]],
+    head: [5,24],
+    x: -1,
+    y: 0,
+    power: 0,
+    can_move: 1,
+    life: 1,
+    color:"#5cd3ff",
+    head_color: "#006aff"
+  }
+  game_array.map = [
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    ]
+  }
     }
 
     intervalVarible = setInterval(play_game, TimeConst);   
     clickListener = document.addEventListener("keydown", keyPush);
 }
-
+//24
 function keyPush(evt) {
   game_array.was_click = 1;
   switch(evt.keyCode){
     case 13:
     game_array.is_paused = !game_array.is_paused
+    case 82:
+      if(game_array?.winer)
+        create_game(game_array?.players)
     case 37:
     if(game_array.player2.x != 1 && game_array.player2.can_move &&game_array.player2.x != -1 ){
       game_array.player2.can_move = 0
@@ -1030,6 +1043,9 @@ function getFirstPage() {
   }
   let btn_3_players = document.createElement('button')
   btn_3_players.innerHTML = "3 players"
+  btn_3_players.onclick = function () {
+            create_game(3);
+  }
   let btn_4_players = document.createElement('button')
   btn_4_players.innerHTML = "4 players"
   btn_4_players.onclick = function () {
