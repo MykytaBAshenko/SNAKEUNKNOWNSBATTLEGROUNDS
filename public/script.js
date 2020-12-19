@@ -1301,12 +1301,12 @@ function getFirstPage() {
   let link_creator1 = document.createElement('a')
   link_creator1.href= "https://github.com/MykytaBAshenko"
   link_creator1.target= "blank"
-  link_creator1.innerHTML= "Mykyta Bashenko"
+  link_creator1.innerHTML= "Developer: Mykyta Bashenko"
   links_block.append(link_creator1)
   let link_creator2 = document.createElement('a')
   link_creator2.href= "https://github.com/vkmetyk"
   link_creator2.target= "blank"
-  link_creator2.innerHTML= "vkmetyk"
+  link_creator2.innerHTML= "Tester: vkmetyk"
 
   links_block.append(link_source_code)
   links_block.append(link_creator1)
